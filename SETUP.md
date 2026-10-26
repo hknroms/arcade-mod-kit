@@ -17,8 +17,9 @@ arcade-mod-kit（このリポジトリ）から、タイトルごとのリポジ
 
 ### Claude がやること
 
-1. `title.json` を埋める（タイトル名・リポジトリ名・MAME のセット名とドライバのソース・ビルド名（短い名前）・改造する CPU の ROM ファイル名・配布ページの URL）。
-   - MAME のセット名とソースは、MAME のソースの `src/mame/<メーカー>/*.cpp` で `GAME(` の行を探す。
+1. `title.json` を埋める（タイトル名・リポジトリ名・MAME のセット名とドライバのソース・ビルド名（短い名前）・改造する CPU の種類と ROM ファイル名と並べ方・配布ページの URL）。
+   - MAME のセット名とソースは、MAME のソースの `src/mame/<メーカー>/*.cpp` で `GAME(` の行を探す。CPU の種類と ROM の並べ方（`ROM_LOAD`・`ROM_LOAD16_BYTE`・`ROM_LOAD32_BYTE` など）も同じファイルで分かる。
+   - 68000 以外の CPU なら docs/knowhow/09-cpus.md を読む（アセンブラの用意など）。
 2. `python3 tools/setup_title.py` で、手順書などの `{{…}}` を埋める。`--check` で埋め残しが無いことを確かめる。
 3. MAME を用意する: `tools/build_mame.sh` でビルド（30〜60分、1回だけ）→ `tools/publish_mame.sh <tar.gz>` で枝 `mame-<ビルド名>-bin` に置く → 新しい会話と同じ手順（CLAUDE.md）でダウンロードして起動を確かめる。
 4. ラベルを作る: Actions タブ →「共同作業ボット」→ Run workflow（API なら `POST /repos/<repo>/actions/workflows/task-bot.yml/dispatches`）。
@@ -36,7 +37,7 @@ arcade-mod-kit（このリポジトリ）から、タイトルごとのリポジ
 | `docs/dev/` | STATUS.md（現在地）・TECH.md（技術メモ）・notes/（リリースの説明文） |
 | `docs/knowhow/` | どのタイトルにも通じるノウハウ |
 | `.github/` | 共同作業ボット（Issue のコメントコマンド）と Issue のテンプレート |
-| `tools/` | asm68.py（68000 アセンブラ）・d68.py（逆アセンブラ）・bps.py（BPS パッチ）・romkit.py（ROM の組み立て・合計の補正）・build_mame.sh / publish_mame.sh（MAME）・setup_title.py |
+| `tools/` | romkit.py（ROM の組み立て。CPU を問わず1本・2本・4本の並べ方、合計の補正）・bps.py（BPS パッチ）・asm68.py / d68.py（68000 のアセンブラ・逆アセンブラ）・build_mame.sh / publish_mame.sh（MAME）・setup_title.py |
 | `lua/` | run.sh / run.lua（MAME を画面なしで回してテスト）、research/（調査用の小さなスクリプト） |
 | `src/` | タイトルごとの改造のソースを置く場所 |
 | `title.json` | タイトルの情報（setup_title.py・romkit.py・build_mame.sh が読む） |

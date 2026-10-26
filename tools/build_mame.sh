@@ -2,7 +2,8 @@
 # そのタイトルのドライバだけを入れた小さな MAME をビルドし、SDL 同梱・ラッパー付きの tar.gz にまとめる。
 # 新しいタイトルを始めたときに「1回だけ」使う。できた tar.gz は枝 mame-<subtarget>-bin に置き、以後はそれを使う（CLAUDE.md）。
 #
-# usage: tools/build_mame.sh [作業フォルダ]      （title.json の mame.source / mame.subtarget を読む）
+# usage: [TOOLS=1] tools/build_mame.sh [作業フォルダ]  （title.json の mame.source / mame.subtarget を読む）
+#   TOOLS=1 で、どの CPU でも逆アセンブルできる unidasm も一緒に作る（時間が延びる。docs/knowhow/09-cpus.md）
 # 所要時間: SDL 数分 + MAME 30〜60分（2コア）。apt が使えず GitHub だけつながる環境で動作確認済み（2026-10, MAME 0.289）
 set -euo pipefail
 HERE=$(cd "$(dirname "$0")/.." && pwd)
@@ -45,13 +46,14 @@ fi
 cd mame
 log "MAME build start ($(git rev-parse --short HEAD)) $SRC"
 make SUBTARGET="$ST" SOURCES="$SRC" NOWERROR=1 NO_USE_MIDI=1 NO_X11=1 NO_USE_XINPUT=1 NO_OPENGL=1 \
-  NO_USE_PORTAUDIO=1 NO_USE_PULSEAUDIO=1 NO_USE_PIPEWIRE=1 USE_QTDEBUG=0 OPTIMIZE=2 SYMBOLS=0 \
+  NO_USE_PORTAUDIO=1 NO_USE_PULSEAUDIO=1 NO_USE_PIPEWIRE=1 USE_QTDEBUG=0 OPTIMIZE=2 SYMBOLS=0 TOOLS=${TOOLS:-0} \
   -j"$(nproc)" > ../make.log 2>&1 || { tail -30 ../make.log; exit 1; }
 log "MAME build done"
 
 # 3) まとめる（SDL 同梱、ライブラリの場所と画面なしの設定をするラッパー）
 OUT="$W/pkg/$ST"; rm -rf "$W/pkg"; mkdir -p "$OUT/lib"
 cp "$ST" "$OUT/$ST.bin"; strip "$OUT/$ST.bin" || true
+[ -x unidasm ] && cp unidasm "$OUT/unidasm" && strip "$OUT/unidasm" || true
 for lib in $(ldd "$OUT/$ST.bin" | awk '/=> \//{print $3}'); do case "$lib" in /opt/*) cp -L "$lib" "$OUT/lib/";; esac; done
 cat > "$OUT/$ST" <<EOF
 #!/bin/bash

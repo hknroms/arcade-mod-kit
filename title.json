@@ -9,10 +9,24 @@
     "maincpu": ":maincpu"
   },
   "cpus": {
+    "_説明": "改造する CPU ごとに1つ。arch は CPU の種類（68000 / z80 / 6809 / 6502 / sh2 / v60 など。MAME のドライバの CPU 名）。groups は ROM の並べ方（tools/romkit.py の先頭）: 1本なら [[\"prog.bin\"]]、16bit の偶数・奇数なら [[\"even\",\"odd\"]]、32bit なら4本、16bit 単位で交互なら {\"files\": [...], \"width\": 2}。複数の組は順に後ろへつながる。",
     "main": {
-      "_説明": "改造する CPU の ROM。偶数・奇数バイトの組（68000 は2本で1組）を並べる。base は ROM の置き場（G3BASE のような環境変数 ROMBASE からの相対パス）",
-      "pairs": [["（偶数バイトのファイル名）", "（奇数バイトのファイル名）"]],
-      "checksum": "（起動時の ROM チェックの方式。分かったら docs/dev/TECH.md に書き、tools/romkit.py の lane_fix などで合わせる）"
+      "arch": "（CPU の種類。例: 68000）",
+      "groups": [
+        [
+          "（ROM のファイル名。16bit なら偶数）",
+          "（奇数）"
+        ]
+      ],
+      "checksum": "（起動時の ROM チェックの方式。分かったら docs/dev/TECH.md に）"
+    },
+    "_例_サウンド": {
+      "arch": "z80",
+      "groups": [
+        [
+          "sound.bin"
+        ]
+      ]
     }
   },
   "boot_text": {

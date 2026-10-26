@@ -33,7 +33,7 @@ code{font-size:12.5px;background:color-mix(in srgb,var(--sub) 15%,transparent);p
 <body>
 <main>
   <h1>arcade-mod-kit</h1>
-  <div class="sub">アーケードゲーム（主に 68000 系の基板）の非公式改造パッチを作るための、ひな形とノウハウ集。<a href="https://github.com/hknroms/arcade-mod-kit">GitHub のリポジトリ</a></div>
+  <div class="sub">アーケードゲームの非公式改造パッチを作るための、ひな形とノウハウ集（CPU は問わない）。<a href="https://github.com/hknroms/arcade-mod-kit">GitHub のリポジトリ</a></div>
 
   <h2>タイトル</h2>
   <div class="titles">
@@ -71,6 +71,7 @@ code{font-size:12.5px;background:color-mix(in srgb,var(--sub) 15%,transparent);p
     <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/06-reproducible-build.md">06 再現できるビルド</a></td><td>ROM 由来データの扱い・公開版と同じものを作れるか確かめる</td></tr>
     <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/07-release-distribution.md">07 リリースと配布</a></td><td>BPS・配布ページ・版の管理・環境ごとの注意</td></tr>
     <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/08-collaboration.md">08 共同作業</a></td><td>Issue のコマンド・まとめページ・要望</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/09-cpus.md">09 CPU ごとの違い</a></td><td>68000 以外（Z80・6809・6502・SH-2 など）で変わるところ</td></tr>
   </table></div>
 
   <h2>ひな形に入っているもの</h2>
@@ -80,7 +81,7 @@ code{font-size:12.5px;background:color-mix(in srgb,var(--sub) 15%,transparent);p
     <tr><td><code>docs/status.html</code></td><td>共同作業のまとめページ（全体・要望・種類別・協力者・始め方）</td></tr>
     <tr><td><code>docs/dev/</code></td><td>STATUS.md（現在地）・TECH.md（技術メモ）・notes/（リリースの説明文）</td></tr>
     <tr><td><code>.github/</code></td><td>共同作業ボットと Issue のテンプレート（検証・作業・要望・テストプレイ報告）</td></tr>
-    <tr><td><code>tools/</code></td><td>68000 アセンブラ・逆アセンブラ、BPS、ROM の組み立てと合計の補正、MAME のビルドと配置、空欄を埋める道具</td></tr>
+    <tr><td><code>tools/</code></td><td>ROM の組み立て（1本・2本・4本の並べ方）と合計の補正、BPS、68000 アセンブラ・逆アセンブラ、MAME のビルドと配置、空欄を埋める道具</td></tr>
     <tr><td><code>lua/</code></td><td>MAME を画面なしで回して検証するスクリプト</td></tr>
   </table></div>
 
