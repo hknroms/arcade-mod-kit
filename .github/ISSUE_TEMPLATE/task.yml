@@ -1,0 +1,51 @@
+name: 作業タスク（調査・実装・素材・資料）
+description: 協力者に頼む作業を立てる（主に管理者用）。テストプレイの検証は「検証タスク」を使う
+title: "[作業] "
+labels: ["未着手"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        協力者（とその Claude）がこの Issue を見て作業します。手順は [COLLAB.md](https://github.com/{{REPO}}/blob/main/COLLAB.md)、進み具合は [まとめページ]({{PAGES}}status.html) で見られます。
+        「確認項目」は1行に1つ、`- [ ] ` で始めて書いてください（完了の条件になります）。
+  - type: dropdown
+    id: type
+    attributes:
+      label: 作業の種類
+      options:
+        - 調査（ROMの解析・原因調査）
+        - 実装（改造・修正のコードを書く）
+        - 素材（画像・パレット・タイル・文字など）
+        - 資料（説明書・翻訳・ページ）
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 対象の版
+      placeholder: v1.0.0
+  - type: textarea
+    id: background
+    attributes:
+      label: 何をしてほしいか（背景）
+      description: 目的・関連する Issue（#1 のように）・参考になるファイルなど
+    validations:
+      required: true
+  - type: textarea
+    id: deliverable
+    attributes:
+      label: 出してほしいもの
+      description: どんな形で提出してほしいか
+      placeholder: |
+        例）docs/notes/stage4.md に解析メモ（RAMの番地と意味の表）
+        例）src/mods/ の修正（ビルドして動作確認したもの）
+  - type: textarea
+    id: checklist
+    attributes:
+      label: 確認項目
+      description: 1行に1つ。終わったと言える条件
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true

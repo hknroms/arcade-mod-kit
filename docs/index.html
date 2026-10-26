@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>arcade-mod-kit — アーケード改造のひな形</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--text:#e6edf3;--sub:#8b949e;--acc:#58a6ff;--ok:#3fb950}
+@media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--panel:#fff;--line:#d0d7de;--text:#1f2328;--sub:#59636e;--acc:#0969da;--ok:#1a7f37}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:17px;margin:32px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.sub{color:var(--sub);font-size:13px}
+a{color:var(--acc)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0}
+ol,ul{margin:6px 0;padding-left:22px}
+li{margin:3px 0}
+.titles{display:grid;gap:10px}
+.title b{font-size:16px}
+.title .links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;margin-top:6px}
+.say{position:relative;margin:8px 0 2px;padding:10px 12px;padding-right:64px;border-radius:8px;background:color-mix(in srgb,var(--acc) 10%,transparent);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.say button{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{white-space:nowrap}
+code{font-size:12.5px;background:color-mix(in srgb,var(--sub) 15%,transparent);padding:1px 5px;border-radius:4px}
+.tag{display:inline-block;font-size:11.5px;padding:0 7px;border-radius:99px;border:1px solid var(--line);color:var(--sub);margin-left:6px;vertical-align:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>arcade-mod-kit</h1>
+  <div class="sub">アーケードゲーム（主に 68000 系の基板）の非公式改造パッチを作るための、ひな形とノウハウ集。<a href="https://github.com/hknroms/arcade-mod-kit">GitHub のリポジトリ</a></div>
+
+  <h2>タイトル</h2>
+  <div class="titles">
+    <div class="panel title"><b>グラディウスIII</b><span class="tag">このひな形の元</span>
+      <div class="links">
+        <a href="https://hknroms.github.io/gradius3/">配布ページ</a>
+        <a href="https://hknroms.github.io/gradius3/status.html">共同作業のまとめ</a>
+        <a href="https://github.com/hknroms/gradius3">リポジトリ</a>
+        <a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/cases/gradius3.md">実例のメモ</a>
+      </div></div>
+  </div>
+
+  <h2>新しいタイトルを始める</h2>
+  <div class="panel">
+    <b>人がやること（GitHub の画面で・数分）</b>
+    <ol>
+      <li><a href="https://github.com/new?template_owner=hknroms&amp;template_name=arcade-mod-kit">このひな形から新しいリポジトリを作る</a>（公開で。名前はタイトルが分かるもの）</li>
+      <li><a href="https://github.com/settings/installations">Claude のアプリ</a>の Configure で、新しいリポジトリを Select repositories に足して Save</li>
+      <li>ピカドラムからも作業するなら、新しいリポジトリの Settings → Collaborators で招待し、ピカドラム側で承認</li>
+      <li>配布ページを出すときは Settings → Pages で「main」「/docs」を選んで Save</li>
+    </ol>
+    <b>Claude に頼むこと</b>
+    <div class="sub">新しい会話で新しいリポジトリをつなぎ、純正ROMの zip を添付して、次の一文を送る（○○ などは書き換える）</div>
+    <div class="say" id="s0">hknroms/○○ の SETUP.md の「Claude がやること」を進めて。タイトルは△△、MAME のセット名は□□。<button type="button" data-t="s0">コピー</button></div>
+    <div class="sub">Claude は title.json を埋め、手順書の空欄を埋め、MAME のビルド済みを用意し、解析を始めます。詳しくは <a href="https://github.com/hknroms/arcade-mod-kit/blob/main/SETUP.md">SETUP.md</a>。</div>
+  </div>
+
+  <h2>ノウハウ集</h2>
+  <div class="panel"><table>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/01-analysis.md">01 解析の進め方</a></td><td>ROM の並べ方・状態機械・RAM の特定・書き込み元の追跡</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/02-patching.md">02 パッチの入れ方</a></td><td>空き領域・アセンブラ・フック・テーブル拡張・レジスタ</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/03-rom-check-and-boot.md">03 ROM チェックと版表示</a></td><td>起動時の ROM チェックを通す・起動画面に版と日時を書く</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/04-emulator-testing.md">04 MAME での検証</a></td><td>ビルド済み MAME・画面なしで回す・分かること分からないこと</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/05-ui-menus.md">05 メニュー・ポーズ</a></td><td>メニュー・ポーズ・設定を足すときの定石</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/06-reproducible-build.md">06 再現できるビルド</a></td><td>ROM 由来データの扱い・公開版と同じものを作れるか確かめる</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/07-release-distribution.md">07 リリースと配布</a></td><td>BPS・配布ページ・版の管理・環境ごとの注意</td></tr>
+    <tr><td><a href="https://github.com/hknroms/arcade-mod-kit/blob/main/docs/knowhow/08-collaboration.md">08 共同作業</a></td><td>Issue のコマンド・まとめページ・要望</td></tr>
+  </table></div>
+
+  <h2>ひな形に入っているもの</h2>
+  <div class="panel"><table>
+    <tr><td><code>CLAUDE.md</code></td><td>Claude への共通の決まり（ROM の扱い・push のルール・記録の置き場所）</td></tr>
+    <tr><td><code>VERIFY.md</code> <code>COLLAB.md</code></td><td>協力者の Claude 向け手順書（検証／調査・実装・素材・資料）</td></tr>
+    <tr><td><code>docs/status.html</code></td><td>共同作業のまとめページ（全体・要望・種類別・協力者・始め方）</td></tr>
+    <tr><td><code>docs/dev/</code></td><td>STATUS.md（現在地）・TECH.md（技術メモ）・notes/（リリースの説明文）</td></tr>
+    <tr><td><code>.github/</code></td><td>共同作業ボットと Issue のテンプレート（検証・作業・要望・テストプレイ報告）</td></tr>
+    <tr><td><code>tools/</code></td><td>68000 アセンブラ・逆アセンブラ、BPS、ROM の組み立てと合計の補正、MAME のビルドと配置、空欄を埋める道具</td></tr>
+    <tr><td><code>lua/</code></td><td>MAME を画面なしで回して検証するスクリプト</td></tr>
+  </table></div>
+
+  <div class="sub" style="margin-top:28px">ROM はどこにも含まれていません。各ゲームの著作権は各社にあります。純正 ROM を所有する方の個人利用を目的とした非公式の改造です。</div>
+</main>
+<script>
+document.addEventListener('click', e => {
+  const b = e.target.closest('.say button'); if (!b) return;
+  const text = document.getElementById(b.dataset.t).firstChild.textContent;
+  try { navigator.clipboard.writeText(text).then(() => { b.textContent = 'コピーしました'; setTimeout(() => b.textContent = 'コピー', 1500); }, () => {}); } catch {}
+});
+</script>
+</body>
+</html>

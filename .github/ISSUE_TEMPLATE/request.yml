@@ -1,0 +1,43 @@
+name: 改善したいこと（要望・気づき）
+description: 協力者の声や、人から直接聞いた話を、そのまま貼り付けて残す
+title: "[要望] "
+labels: ["要望"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        文章はコピペのままで大丈夫です。ファイル（画像・動画・テキストなど）は「添付」の欄にドラッグするか、スマホは欄の下の「Paste, drop, or click to add files」から選んでください。
+        ※ ROM の中身やダンプは添付しないでください。
+  - type: dropdown
+    id: source
+    attributes:
+      label: 誰からの話か
+      options:
+        - 自分（管理者）の気づき
+        - 協力者から
+        - 人から直接聞いた話
+        - その他
+    validations:
+      required: true
+  - type: input
+    id: who
+    attributes:
+      label: 話をくれた人（わかれば）
+      placeholder: 例）ゲーセン仲間の○○さん／@github名
+  - type: input
+    id: version
+    attributes:
+      label: 関係する版（わかれば）
+      placeholder: v1.0.0
+  - type: textarea
+    id: content
+    attributes:
+      label: 内容
+      description: 聞いた話・メッセージ・メモなどを、そのまま貼り付けてください
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: 添付
+      description: スクリーンショット・動画・テキストファイルなど（任意）

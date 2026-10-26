@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>共同作業のまとめ — {{TITLE}} 改造ROM</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--text:#e6edf3;--sub:#8b949e;--acc:#58a6ff;--ok:#3fb950;--ng:#f85149;--warn:#d29922;--todo:#6e7681;--rev:#4c8ef5}
+@media (prefers-color-scheme: light){:root{--bg:#f6f8fa;--panel:#fff;--line:#d0d7de;--text:#1f2328;--sub:#59636e;--acc:#0969da;--ok:#1a7f37;--ng:#cf222e;--warn:#9a6700;--todo:#8c959f;--rev:#1d63d6}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:16px;margin:26px 0 10px;display:flex;align-items:center;gap:8px}
+h2 .n{font-size:13px;color:var(--sub);font-weight:400}
+.sub{color:var(--sub);font-size:13px}
+a{color:var(--acc)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+button{font:inherit;font-size:13px;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
+nav{display:flex;gap:6px;overflow-x:auto;margin:18px -16px 0;padding:0 16px 2px;scrollbar-width:none;border-bottom:1px solid var(--line)}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:none;padding:8px 12px;font-size:14px;color:var(--sub);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+nav a.on{color:var(--text);border-color:var(--acc);font-weight:600}
+nav a .c{font-size:11.5px;margin-left:4px;padding:0 6px;border-radius:99px;background:color-mix(in srgb,var(--sub) 18%,transparent)}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0 6px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.tile b{display:block;font-size:24px;line-height:1.2}
+.tile span{font-size:12px;color:var(--sub)}
+@media (max-width:560px){.tiles{grid-template-columns:repeat(3,1fr)}}
+.s-todo{--sc:var(--todo)}.s-doing{--sc:var(--warn)}.s-review{--sc:var(--rev)}.s-human{--sc:var(--ng)}.s-done{--sc:var(--ok)}
+.tile b{color:var(--sc)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none;background:var(--sc)}
+.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0}
+.card .t{font-weight:600;overflow-wrap:anywhere}
+.card .t a{color:inherit;text-decoration:none}
+.card .t a:hover{text-decoration:underline}
+.card .t .num{color:var(--sub);font-weight:400;margin-right:6px}
+.chip{display:inline-block;font-size:11.5px;font-weight:400;padding:0 7px;border-radius:99px;border:1px solid var(--line);color:var(--sub);margin-right:6px;vertical-align:1px}
+.meta{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:12.5px;color:var(--sub);margin-top:4px}
+.meta .who{color:var(--text)}
+.bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--sub) 22%,transparent);margin-top:10px}
+.bar i{display:block;height:100%}
+.bar .ok{background:var(--ok)}.bar .ng{background:var(--ng)}.bar .hold{background:var(--warn)}
+.cnt{font-size:12.5px;margin-top:4px;color:var(--sub)}
+.note{font-size:13px;margin-top:6px;padding-left:10px;border-left:2px solid var(--line);overflow-wrap:anywhere}
+.subs{margin-top:8px;font-size:13px}
+.subs a{overflow-wrap:anywhere}
+.empty{color:var(--sub);font-size:13px;padding:6px 2px}
+.err{background:color-mix(in srgb,var(--ng) 12%,transparent);border:1px solid var(--ng);border-radius:10px;padding:12px 14px;font-size:14px;margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{border-bottom:none}
+th{font-size:12px;color:var(--sub);font-weight:500}
+td.z{color:var(--sub)}
+.tblwrap{overflow-x:auto}
+.howto{display:grid;gap:12px;margin-top:16px}
+.howto .box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.howto h3{font-size:15px;margin:0 0 4px}
+.howto .who{font-size:12.5px;color:var(--sub);margin-bottom:8px}
+.howto ol{margin:6px 0;padding-left:20px;font-size:14px}
+.howto li{margin:3px 0}
+.say{position:relative;margin:8px 0 2px;padding:10px 12px;padding-right:64px;border-radius:8px;background:color-mix(in srgb,var(--acc) 10%,transparent);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.say button{position:absolute;top:6px;right:6px;font-size:12px;padding:4px 10px}
+.form{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:16px;display:grid;gap:10px}
+.form label{font-size:13px;color:var(--sub);display:grid;gap:4px}
+.form input,.form select,.form textarea{font:inherit;font-size:15px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%}
+.form textarea{min-height:160px;resize:vertical}
+.form .go{background:var(--acc);border-color:var(--acc);color:#fff;font-size:15px;padding:10px}
+.form .hint{font-size:12.5px;color:var(--sub)}
+.startlink{display:inline-block;margin-top:8px;font-size:13.5px}
+.feed{list-style:none;padding:0;margin:0;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.feed li{padding:8px 12px;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+.feed li:last-child{border-bottom:none}
+.feed .when{color:var(--sub);font-size:12px;margin-left:auto;flex:none}
+.feed .what{overflow-wrap:anywhere}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.person{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.person .hd{display:flex;gap:10px;align-items:center}
+.person img{width:40px;height:40px;border-radius:50%;background:var(--line);flex:none}
+.person .nm{font-weight:600;line-height:1.3}
+.person .lg{font-size:12.5px;color:var(--sub)}
+.person .links{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;margin-top:8px}
+.person .stats{display:flex;gap:12px;font-size:12.5px;color:var(--sub);margin-top:6px}
+.person .stats b{color:var(--text);font-weight:600}
+.person ul{margin:6px 0 0;padding-left:18px;font-size:13px}
+.role{font-size:11px;padding:0 6px;border-radius:99px;background:color-mix(in srgb,var(--acc) 18%,transparent);color:var(--acc);margin-left:6px;vertical-align:1px}
+details{margin-top:28px;font-size:13.5px}
+summary{cursor:pointer;font-weight:600}
+code{font-size:12.5px;background:color-mix(in srgb,var(--sub) 15%,transparent);padding:1px 5px;border-radius:4px}
+.closed{opacity:.75}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <h1>共同作業のまとめ</h1>
+      <div class="sub">{{TITLE}} 改造ROM（非公式）／ <a href="./">配布ページ</a> ／ 協力のしかた：<a href="https://github.com/{{REPO}}/blob/main/VERIFY.md">検証</a>・<a href="https://github.com/{{REPO}}/blob/main/COLLAB.md">その他の作業</a></div>
+    </div>
+    <button id="reload" type="button">更新</button>
+  </div>
+  <a class="startlink" href="#%E5%A7%8B%E3%82%81%E6%96%B9">▶ 新しいチャットで始めるには（始め方）</a>
+  <nav id="nav"></nav>
+  <div id="out"><div class="sub" style="margin-top:16px">読み込み中…</div></div>
+  <div class="sub" id="stamp" style="margin-top:14px"></div>
+
+  <details>
+    <summary>このページの見方</summary>
+    <ul>
+      <li>GitHub の Issue のうち、作業の種類（検証・調査・実装・素材・資料）のラベルが付いたものを一覧にしています。開くたびに最新を読み込みます。</li>
+      <li>タブはそれぞれ直接開けます（例：<code>status.html#協力者</code>、<code>status.html#調査</code>）。</li>
+      <li>担当・進み具合・提出物は、協力者（の Claude）が Issue にコメントするコマンド（<code>/claim</code> <code>/check</code> <code>/submit</code> <code>/done</code> など）で自動的に変わります。</li>
+      <li>状態：未着手 → 担当中 → 確認待ち（提出済み）→ 完了。人の目や判断が要るものは「要人間確認」。</li>
+      <li>バーの色：<span style="color:var(--ok)">緑＝OK</span>／<span style="color:var(--ng)">赤＝おかしい</span>／<span style="color:var(--warn)">黄＝人の目で確認が必要</span>／灰＝まだ</li>
+      <li>協力者は、Issue での活動とフォークから自動で載ります。紹介文などは <code>docs/collaborators.json</code> で足せます。</li>
+    </ul>
+  </details>
+</main>
+
+<script>
+const REPO = '{{REPO}}';
+const API = 'https://api.github.com/repos/' + REPO;
+const TYPES = ['検証', '調査', '実装', '素材', '資料'];
+const ST = [
+  { key: 'doing',  label: '担当中' },
+  { key: 'review', label: '確認待ち' },
+  { key: 'human',  label: '要人間確認' },
+  { key: 'todo',   label: '未着手' },
+  { key: 'done',   label: '完了' },
+];
+const STL = Object.fromEntries(ST.map(s => [s.key, s.label]));
+const ACT = { open: 'を立てた', claim: 'を担当した', check: 'に確認結果を記録', submit: 'に提出した', done: 'を報告した', human: 'を要人間確認にした',
+  release: 'の担当をやめた', accept: 'を完了にした', reject: 'を差し戻した', timeout: 'が期限切れで未着手に戻った' };
+const ITEM = /^\s*- \[( |x|X)\] (.*)$/;
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl = u => /^https:\/\/github\.com\//.test(u || '') ? u : '';
+function getState(body) {
+  const m = (body || '').match(/<!-- (?:verify|task)-state (\{[^]*?\}) -->/);
+  if (!m) return {};
+  try { return JSON.parse(m[1]); } catch { return {}; }
+}
+function section(body, name) {
+  const m = (body || '').match(new RegExp('^### ' + name + '\\s*\\n+([^]*?)(?=\\n### |\\n<!--|$)', 'm'));
+  const v = m ? m[1].trim() : '';
+  return v === '_No response_' ? '' : v;
+}
+function count(body) {
+  const c = { total: 0, ok: 0, ng: 0, hold: 0 };
+  for (const line of (body || '').split('\n')) {
+    const m = line.match(ITEM); if (!m) continue;
+    c.total++;
+    if (m[2].startsWith('✅')) c.ok++;
+    else if (m[2].startsWith('❌')) c.ng++;
+    else if (m[2].startsWith('⚠️')) c.hold++;
+    else if (m[1] !== ' ') c.ok++;
+  }
+  return c;
+}
+function ago(iso) {
+  if (!iso) return '';
+  const s = (Date.now() - Date.parse(iso)) / 1000;
+  if (s < 3600) return Math.max(1, Math.round(s / 60)) + '分前';
+  if (s < 86400) return Math.round(s / 3600) + '時間前';
+  return Math.round(s / 86400) + '日前';
+}
+function labelsOf(is) { return is.labels.map(l => typeof l === 'string' ? l : l.name); }
+function normalize(is) {
+  const names = labelsOf(is);
+  const type = TYPES.find(t => names.includes(t));
+  let status = 'todo';
+  if (names.includes('完了') || names.includes('検証済み')) status = 'done';
+  else if (names.includes('要人間確認')) status = 'human';
+  else if (names.includes('確認待ち')) status = 'review';
+  else if (names.includes('担当中')) status = 'doing';
+  return { ...is, type, status, st: getState(is.body), cnt: count(is.body) };
+}
+
+function card(t, showType) {
+  const st = t.st, c = t.cnt;
+  const ver = section(t.body, '対象の版') || section(t.body, '版');
+  const stage = section(t.body, '面・エリア');
+  const meta = [];
+  const build = section(t.body, '起動画面の数字（版・ビルド日時）') || section(t.body, 'BUILD 日時（起動画面）') || section(t.body, 'BUILD 日時');
+  if (ver) meta.push(esc(ver) + (build ? ' <span title="BUILD 日時">(' + esc(build) + ')</span>' : ''));
+  if (stage) meta.push(esc(stage));
+  if ((t.status === 'doing' || t.status === 'review') && st.claimer) meta.push(`<span class="who">@${esc(st.claimer)}</span> が ${ago(st.claimed_at)}から担当`);
+  else if ((t.status === 'done' || t.status === 'human') && (st.done_by || st.claimer)) meta.push(`<span class="who">@${esc(st.done_by || st.claimer)}</span>`);
+  meta.push('更新 ' + ago(st.updated_at || t.updated_at));
+  const pct = n => c.total ? (n / c.total * 100) + '%' : '0';
+  const left = c.total - c.ok - c.ng - c.hold;
+  const prog = c.total
+    ? `<div class="bar"><i class="ok" style="width:${pct(c.ok)}"></i><i class="ng" style="width:${pct(c.ng)}"></i><i class="hold" style="width:${pct(c.hold)}"></i></div>
+       <div class="cnt">${c.ok + c.ng + c.hold}/${c.total} 項目　<span style="color:var(--ok)">✅${c.ok}</span>　<span style="color:var(--ng)">❌${c.ng}</span>　<span style="color:var(--warn)">⚠️${c.hold}</span>${left ? `　残り${left}` : ''}</div>`
+    : '';
+  const subs = (st.submissions || []).filter(s => safeUrl(s.url));
+  const subHtml = subs.length ? `<div class="subs">📦 提出：${subs.slice(-3).reverse().map(s =>
+    `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.note || s.url.replace('https://github.com/', ''))}</a>（@${esc(s.by)}・${ago(s.at)}）`).join('　')}</div>` : '';
+  const note = st.note ? `<div class="note">${esc(st.note)}</div>` : '';
+  const href = safeUrl(st.last_comment) || t.html_url;
+  const typeChip = (labelsOf(t).includes('要望') ? '<span class="chip">要望</span>' : '') + (showType && t.type ? `<span class="chip">${esc(t.type)}</span>` : '');
+  return `<div class="card${t.state === 'closed' ? ' closed' : ''}">
+    <div class="t">${typeChip}<a href="${esc(href)}" target="_blank" rel="noopener"><span class="num">#${t.number}</span>${esc(t.title.replace(/^\[(検証|テスト|作業|要望)\]\s*/, ''))}</a></div>
+    <div class="meta">${meta.map(m => `<span>${m}</span>`).join('')}</div>${prog}${subHtml}${note}</div>`;
+}
+function tiles(list) {
+  return `<div class="tiles">${ST.map(s => `<div class="tile s-${s.key}"><b>${list.filter(t => t.status === s.key).length}</b><span>${s.label}</span></div>`).join('')}</div>`;
+}
+function groups(list, showType, keys) {
+  return (keys || ST.map(s => s.key)).map(k => {
+    const items = list.filter(t => t.status === k).sort((a, b) => k === 'done'
+      ? Date.parse(b.st.updated_at || b.updated_at) - Date.parse(a.st.updated_at || a.updated_at) : a.number - b.number);
+    return `<h2 class="s-${k}"><span class="dot"></span>${STL[k]}<span class="n">${items.length}件</span></h2>` +
+      (items.length ? items.map(t => card(t, showType)).join('') : '<div class="empty">ありません</div>');
+  }).join('');
+}
+
+function viewAll(D) {
+  const L = D.tasks;
+  const rows = TYPES.map(ty => {
+    const sub = L.filter(t => t.type === ty);
+    return `<tr><td><a href="#${encodeURIComponent(ty)}">${ty}</a></td>${ST.map(s => {
+      const n = sub.filter(t => t.status === s.key).length;
+      return `<td class="${n ? '' : 'z'}">${n}</td>`; }).join('')}</tr>`;
+  }).join('');
+  const feed = [];
+  for (const t of L) for (const h of (t.st.history || [])) if (h.who && h.who !== 'bot' || h.what === 'timeout') feed.push({ ...h, t });
+  feed.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+  const feedHtml = feed.length ? `<ul class="feed">${feed.slice(0, 15).map(f =>
+    `<li><span class="what">${f.what === 'timeout' ? '' : `<b>@${esc(f.who)}</b> が `}<a href="${esc(f.t.html_url)}" target="_blank" rel="noopener">#${f.t.number}</a>${esc(ACT[f.what] || f.what)}</span><span class="when">${ago(f.at)}</span></li>`).join('')}</ul>`
+    : '<div class="empty">まだ動きはありません</div>';
+  return tiles(L) +
+    `<h2>種類ごと</h2><div class="tblwrap"><table><tr><th>種類</th>${ST.map(s => `<th>${s.label}</th>`).join('')}</tr>${rows}</table></div>` +
+    `<h2>最近の動き</h2>${feedHtml}` +
+    groups(L, true, ['review', 'human', 'doing']);
+}
+function viewType(D, ty) {
+  const L = D.tasks.filter(t => t.type === ty);
+  return tiles(L) + groups(L, false);
+}
+function people(D) {
+  const P = new Map();
+  const get = login => {
+    if (!P.has(login)) P.set(login, { login, doing: [], done: 0, subs: 0, reports: 0, last: '', tasks: new Set() });
+    return P.get(login);
+  };
+  for (const t of D.tasks) {
+    const st = t.st;
+    const author = t.user && t.user.login;
+    if (author && author !== 'ghost' && !/\[bot\]$/.test(author)) { const p = get(author); p.reports++; p.tasks.add(t.number); if (t.created_at > p.last) p.last = t.created_at; }
+    for (const h of (st.history || [])) {
+      if (!h.who || h.who === 'bot') continue;
+      const p = get(h.who); if (h.at > p.last) p.last = h.at; p.tasks.add(t.number);
+    }
+    if (st.claimer && (t.status === 'doing' || t.status === 'review')) get(st.claimer).doing.push(t);
+    const finisher = st.done_by || st.claimer;
+    if (finisher && t.status === 'done') get(finisher).done++;
+    for (const s of (st.submissions || [])) { const p = get(s.by); p.subs++; if (s.at > p.last) p.last = s.at; }
+  }
+  const forks = new Map(D.forks.map(f => [f.owner.login, f.html_url]));
+  for (const login of forks.keys()) get(login);
+  const meta = new Map((D.collab.collaborators || []).map(c => [c.login, c]));
+  for (const login of meta.keys()) get(login);
+  return [...P.values()].map(p => ({ ...p, meta: meta.get(p.login) || {}, fork: forks.get(p.login) }))
+    .sort((a, b) => (a.meta.role === '管理者') - (b.meta.role === '管理者') || (b.last || '').localeCompare(a.last || ''));
+}
+function viewPeople(D) {
+  const list = people(D);
+  if (!list.length) return '<div class="empty" style="margin-top:16px">まだいません</div>';
+  return `<h2>協力者<span class="n">${list.length}人</span></h2><div class="people">${list.map(p => {
+    const m = p.meta, login = esc(p.login);
+    const links = [`<a href="https://github.com/${login}" target="_blank" rel="noopener">GitHub</a>`];
+    if (p.fork) links.push(`<a href="${esc(p.fork)}" target="_blank" rel="noopener">フォーク</a>`);
+    if (p.tasks.size || p.subs) links.push(`<a href="https://github.com/${REPO}/issues?q=${encodeURIComponent('involves:' + p.login)}" target="_blank" rel="noopener">関わったIssue</a>`);
+    if (m.url && /^https:\/\//.test(m.url)) links.push(`<a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.url_label || 'リンク')}</a>`);
+    const doing = p.doing.length ? `<ul>${p.doing.map(t => `<li><a href="${esc(t.html_url)}" target="_blank" rel="noopener">#${t.number}</a> ${esc(t.title.replace(/^\[(検証|テスト|作業)\]\s*/, ''))}（${STL[t.status]}）</li>`).join('')}</ul>` : '';
+    return `<div class="person"><div class="hd"><img src="https://github.com/${login}.png?size=80" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+      <div><div class="nm">${esc(m.name || p.login)}${m.role ? `<span class="role">${esc(m.role)}</span>` : ''}</div><div class="lg">@${login}${p.last ? '・' + ago(p.last) + 'に活動' : ''}</div></div></div>
+      ${m.note ? `<div class="note">${esc(m.note)}</div>` : ''}
+      <div class="stats"><span>担当中 <b>${p.doing.length}</b></span><span>完了 <b>${p.done}</b></span><span>提出 <b>${p.subs}</b></span><span>報告・依頼 <b>${p.reports}</b></span></div>
+      ${doing}<div class="links">${links.join('')}</div></div>`;
+  }).join('')}</div>`;
+}
+
+
+const HOWTO = [
+  { title: '開発の続き（管理者）', who: '管理者（{{OWNER}}・ピカドラム）の会話。改造・修正・リリース',
+    steps: ['Claude の新しい会話で、GitHub の {{REPO}} をつなぐ', 'ROM を使う作業なら、純正ROMの zipを添付する', '下の一文を送る（引き継ぎファイルは不要）'],
+    say: '{{REPO}} の CLAUDE.md と docs/dev/STATUS.md を読んで、続きをやって' },
+  { title: 'テストプレイの検証（協力者）', who: '確認項目のある「検証」の Issue を1件やる',
+    steps: ['Claude に GitHub を連携しておく（claude.ai の設定 → コネクタ。なくても参加できる）', '配布ページで作った {{DRIVER}}.zip（改造版）を添付する', '下の一文を送る'],
+    say: '{{REPO}} の VERIFY.md に従って、未着手の検証を1件やって' },
+  { title: '調査・実装・素材・資料（協力者）', who: '「調査」「実装」「素材」「資料」の Issue を1件やる',
+    steps: ['GitHub アカウントを用意し、Claude に連携する', 'このリポジトリを自分の GitHub にフォークする（1回だけ）： github.com/{{REPO}}/fork', 'ROM が要る作業なら {{DRIVER}}.zip を添付する', '下の一文を送る（種類を選ぶなら「未着手の調査を1件」のように）'],
+    say: '{{REPO}} の COLLAB.md に従って、未着手の作業を1件やって' },
+];
+function viewHowto() {
+  return `<div class="howto">${HOWTO.map((h, i) => `<div class="box"><h3>${esc(h.title)}</h3><div class="who">${esc(h.who)}</div>
+    <ol>${h.steps.map(x => `<li>${esc(x).replace('github.com/{{REPO}}/fork', '<a href="https://github.com/{{REPO}}/fork" target="_blank" rel="noopener">github.com/{{REPO}}/fork</a>')}</li>`).join('')}</ol>
+    <div class="say" id="say${i}">${esc(h.say)}<button type="button" data-i="${i}">コピー</button></div></div>`).join('')}
+    <div class="sub">どの会話でも、決まりごと（ROM を公開しない・push のルールなど）は CLAUDE.md、いまの状態は docs/dev/STATUS.md にあり、リポジトリをつなぐと Claude が読みます。会話をまたいで情報を持ち運ぶ必要はありません。</div></div>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.say button'); if (!b) return;
+  const text = HOWTO[+b.dataset.i].say;
+  const done = () => { b.textContent = 'コピーしました'; setTimeout(() => b.textContent = 'コピー', 1500); };
+  try { navigator.clipboard.writeText(text).then(done, () => {}); } catch {}
+});
+
+const REQ_SOURCES = ['自分（管理者）の気づき', '協力者から', '人から直接聞いた話', 'その他'];
+function viewRequest(D) {
+  const list = D ? D.tasks.filter(t => labelsOf(t).includes('要望')) : [];
+  return `<form class="form" id="reqform" onsubmit="return false">
+    <div><b>改善したいことを送る</b><div class="hint">協力者の声や、人から直接聞いた話を、そのまま貼り付けてください。送ると GitHub の Issue になり、自動で「検証」タスク（未着手）になります。</div></div>
+    <label>誰からの話か<select id="rq_source">${REQ_SOURCES.map(x => `<option>${esc(x)}</option>`).join('')}</select></label>
+    <label>話をくれた人（わかれば）<input id="rq_who" placeholder="例）○○さん／@github名"></label>
+    <label>関係する版（わかれば）<input id="rq_version" placeholder="v1.0.0"></label>
+    <label>内容（コピペのままで OK）<textarea id="rq_content" placeholder="聞いた話・メッセージ・メモなど"></textarea></label>
+    <button type="button" class="go" id="rq_go">GitHub で送る（次の画面でファイルも添付できます）</button>
+    <div class="hint">GitHub へのログインが必要です。ファイル（画像・動画など）は、次の画面の「添付」欄にドラッグするか、スマホは欄の下から選んでください。ROM の中身は添付しないでください。<br>このページは配布ページからリンクしていませんが、送った内容は公開の Issue になります。</div>
+    <div class="hint" id="rq_msg"></div>
+  </form>` + (D ? `<h2>届いた要望<span class="n">${list.length}件</span></h2>` + (list.length ? list.sort((a, b) => b.number - a.number).map(t => card(t, false)).join('') : '<div class="empty">まだありません</div>') : '');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#rq_go')) return;
+  const v = id => document.getElementById(id).value.trim();
+  const content = v('rq_content');
+  const msg = document.getElementById('rq_msg');
+  if (!content) { msg.textContent = '内容を入れてください'; return; }
+  const title = '[要望] ' + content.split('\n')[0].slice(0, 40);
+  const q = { template: 'request.yml', title, source: v('rq_source'), who: v('rq_who'), version: v('rq_version'), content };
+  let url = `https://github.com/${REPO}/issues/new?` + Object.entries(q).filter(([, x]) => x).map(([k, x]) => k + '=' + encodeURIComponent(x)).join('&');
+  if (url.length > 7000) {   // 長すぎるとき: 内容はコピーして、次の画面で貼ってもらう
+    delete q.content;
+    url = `https://github.com/${REPO}/issues/new?` + Object.entries(q).filter(([, x]) => x).map(([k, x]) => k + '=' + encodeURIComponent(x)).join('&');
+    try { navigator.clipboard.writeText(content); } catch {}
+    msg.textContent = '内容が長いのでコピーしました。次の画面の「内容」欄に貼り付けてください。';
+  }
+  window.open(url, '_blank', 'noopener');
+});
+
+const TABS = [{ id: '全体' }, { id: '要望' }, ...TYPES.map(t => ({ id: t })), { id: '協力者' }, { id: '始め方' }];
+let DATA = null;
+function current() { const h = decodeURIComponent(location.hash.slice(1)); return TABS.some(t => t.id === h) ? h : '全体'; }
+function draw() {
+  const cur = current();
+  const cnt = id => !DATA ? '' : id === '全体' ? DATA.tasks.filter(t => t.status !== 'done').length
+    : id === '協力者' ? people(DATA).length : id === '始め方' ? '' : id === '要望' ? DATA.tasks.filter(t => labelsOf(t).includes('要望') && t.status !== 'done').length : DATA.tasks.filter(t => t.type === id && t.status !== 'done').length;
+  document.getElementById('nav').innerHTML = TABS.map(t =>
+    `<a href="#${encodeURIComponent(t.id)}" class="${t.id === cur ? 'on' : ''}">${t.id}${DATA && t.id !== '始め方' ? `<span class="c">${cnt(t.id)}</span>` : ''}</a>`).join('');
+  const out = document.getElementById('out');
+  if (cur === '始め方') { out.innerHTML = viewHowto(); document.title = '始め方 — 共同作業のまとめ'; return; }
+  if (cur === '要望') { out.innerHTML = viewRequest(DATA); document.title = '要望 — 共同作業のまとめ'; return; }
+  if (!DATA) return;
+  out.innerHTML = cur === '全体' ? viewAll(DATA) : cur === '協力者' ? viewPeople(DATA) : viewType(DATA, cur);
+  document.title = (cur === '全体' ? '' : cur + ' — ') + '共同作業のまとめ';
+}
+
+const DEMO = () => {
+  const h = n => new Date(Date.now() - n * 3600e3).toISOString();
+  const mk = (number, title, labels, body, st) => ({ number, title, labels, state: 'open', updated_at: h(1), html_url: `https://github.com/${REPO}/issues/${number}`,
+    body: body + '\n\n<!-- task-state ' + JSON.stringify(st) + ' -->' });
+  return {
+    tasks: [
+      mk(1, '[テスト] 地形の表示がおかしい', ['検証','担当中'], '### 版\n\nv0.4.16\n\n### 確認項目\n- [x] ✅ a\n- [x] ❌ b\n- [ ] c', { claimer: 'tanaka', claimed_at: h(5), updated_at: h(1), history: [{ who: 'tanaka', what: 'claim', at: h(5) }] }),
+      mk(7, '[作業] 4面の自機表示ルーチンを調べる', ['調査','確認待ち'], '### 対象の版\n\nv0.4.16\n\n### 確認項目\n- [x] ✅ 番地の特定\n- [ ] メモ', { claimer: 'suzuki', claimed_at: h(30), updated_at: h(2),
+        submissions: [{ url: 'https://github.com/suzuki/{{REPO_NAME}}/tree/task-7', by: 'suzuki', at: h(2), note: '解析メモ stage4.md' }],
+        history: [{ who: 'suzuki', what: 'claim', at: h(30) }, { who: 'suzuki', what: 'submit', at: h(2) }] }),
+      mk(8, '[作業] 英語版ページの更新', ['資料','未着手'], '### 確認項目\n- [ ] 翻訳', {}),
+      mk(2, '[テスト] キューブラッシュの地形', ['検証','完了'], '### 確認項目\n- [x] ✅ a', { done_by: 'tanaka', done_at: h(50), updated_at: h(50), history: [{ who: 'tanaka', what: 'done', at: h(50) }] }),
+    ].map(normalize),
+    forks: [{ owner: { login: 'suzuki' }, html_url: 'https://github.com/suzuki/{{REPO_NAME}}' }],
+    collab: { collaborators: [{ login: '{{OWNER}}', name: '{{OWNER}}', role: '管理者', note: '改造・リリース担当' }, { login: 'suzuki', note: '解析が得意' }] },
+  };
+};
+
+async function getJSON(url) {
+  const r = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
+  if (r.status === 403 || r.status === 429) throw new Error('GitHub の読み込み回数の上限（1時間に60回）に達しました。しばらくしてから「更新」を押してください。');
+  if (!r.ok) throw new Error('GitHub から読み込めませんでした（' + r.status + '）。');
+  return r.json();
+}
+async function load() {
+  const stamp = document.getElementById('stamp');
+  stamp.textContent = '読み込み中…';
+  if (new URLSearchParams(location.search).has('demo')) { DATA = DEMO(); draw(); stamp.textContent = 'デモ表示（実際のデータではありません）'; return; }
+  try {
+    const all = [];
+    for (let page = 1; page <= 5; page++) {
+      const list = await getJSON(`${API}/issues?state=all&per_page=100&page=${page}`);
+      all.push(...list.filter(i => !i.pull_request));
+      if (list.length < 100) break;
+    }
+    const tasks = all.map(normalize).filter(t => t.type || labelsOf(t).includes('要望'));
+    const forks = await getJSON(`${API}/forks?per_page=100`).catch(() => []);
+    let collab = {};
+    try { const r = await fetch('collaborators.json', { cache: 'no-store' }); if (r.ok) collab = await r.json(); } catch {}
+    DATA = { tasks, forks, collab };
+    draw();
+    stamp.textContent = new Date().toLocaleString('ja-JP', { dateStyle: 'short', timeStyle: 'short' }) + ' 時点';
+  } catch (e) {
+    document.getElementById('out').innerHTML = `<div class="err">${esc(e.message)}</div>`;
+    stamp.textContent = '';
+  }
+}
+window.addEventListener('hashchange', () => { draw(); window.scrollTo(0, 0); });
+document.getElementById('reload').addEventListener('click', load);
+draw();
+load();
+</script>
+</body>
+</html>

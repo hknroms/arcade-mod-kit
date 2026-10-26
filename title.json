@@ -1,0 +1,24 @@
+{
+  "_説明": "このタイトル（ゲーム）の情報。SETUP.md の手順で埋める。tools/romkit.py・tools/build_mame.sh・docs/status.html がここを読む。",
+  "title": "（ゲームの名前。例: グラディウスIII）",
+  "repo": "hknroms/（このリポジトリの名前）",
+  "mame": {
+    "driver": "（MAME のセット名。例: gradius3）",
+    "source": "（MAME のドライバのソース。例: src/mame/konami/gradius3.cpp）",
+    "subtarget": "（ビルドする MAME の名前。短く。例: g3）",
+    "maincpu": ":maincpu"
+  },
+  "cpus": {
+    "main": {
+      "_説明": "改造する CPU の ROM。偶数・奇数バイトの組（68000 は2本で1組）を並べる。base は ROM の置き場（G3BASE のような環境変数 ROMBASE からの相対パス）",
+      "pairs": [["（偶数バイトのファイル名）", "（奇数バイトのファイル名）"]],
+      "checksum": "（起動時の ROM チェックの方式。分かったら docs/dev/TECH.md に書き、tools/romkit.py の lane_fix などで合わせる）"
+    }
+  },
+  "boot_text": {
+    "_説明": "起動画面に版と日時を書く場所（分かったら埋める）。docs/knowhow/03-rom-check-and-boot.md を参照",
+    "addr": null,
+    "limit": null
+  },
+  "pages": "https://hknroms.github.io/（このリポジトリの名前）/"
+}
