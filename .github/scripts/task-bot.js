@@ -100,7 +100,8 @@ function parseCommands(text) {
   const lines = (text || '').split('\n');
   const cmds = [];
   lines.forEach((raw, i) => {
-    const line = raw.trim();
+    // Windows の Git Bash（MSYS）から送ると「/claim」が「C:/Program Files/Git/claim」に化ける → 元に戻す
+    const line = raw.trim().replace(/^[A-Za-z]:\/Program Files(?: \(x86\))?\/Git\//i, '/');
     const m = line.match(/^\/(claim|check|submit|done|human|release|items|type|accept|reject)\b\s*(.*)$/i);
     if (!m) return;
     const c = { name: m[1].toLowerCase(), arg: m[2].trim() };

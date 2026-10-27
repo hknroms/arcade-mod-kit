@@ -65,6 +65,8 @@ MAMEBIN=$HOME/{{SUBTARGET}}/{{SUBTARGET}} SEQ="60:COIN,120:START" SNAP="600:3000
 - スナップ画像は自分で開いて見る。見た目の判定は「明らかに壊れている／明らかに正常」だけにし、微妙なら `hold`。
 - 目的の場面まで進めるのに時間がかかる場合は、改造のメニュー（面選択など）があれば使う。RAM の番地は docs/dev/TECH.md。
 - 同じ手順を2回以上回して、毎回起きるか・たまにかも確かめる。
+- **外れうる対照を必ず置く**：「直った」「起きない」と判定するときは、起きるはずの場面（直す前・純正など）も同じ手順で回し、そちらでは起きることを確かめる（docs/knowhow/04）。
+- Windows の Git Bash から `gh` でコメントすると `/check` などが `C:/Program Files/Git/check` に化ける。PowerShell から送るか `MSYS_NO_PATHCONV=1` を付ける。
 
 ### 5. 結果を書く
 
